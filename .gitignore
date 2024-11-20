@@ -1,0 +1,5 @@
+.env
+nginx/conf.d/default.conf
+nginx/logs
+nginx/certs
+docker-compose.yml
