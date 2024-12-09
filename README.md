@@ -13,7 +13,7 @@ This guide will help you set up an Nginx reverse proxy using Docker. A reverse p
 ### Step 1: Clone the Repository
 
 ```sh
-git clone https://github.com/your-repo/nginx-docker.git
+git clone https://github.com/LorenzoAnas/nginx-docker.git
 cd nginx-docker
 ```
 
@@ -21,7 +21,7 @@ cd nginx-docker
 
 Edit the `nginx/conf.d/default.conf` file to match your setup. Here is an example configuration:
 
-```properties
+```nginx
 server {
     listen 80;
     server_name your-domain.com;
@@ -85,6 +85,27 @@ docker-compose up -d
 ### Step 6: Verify SSL Setup
 
 After Certbot successfully obtains the certificates, you can verify the SSL setup by visiting `https://your-domain.com`.
+
+### Step 7: Automate Certificate Renewal with Crontab
+
+To ensure your SSL certificates are renewed automatically before they expire, you can set up a cron job.
+
+1. Open your crontab:
+   ```sh
+   crontab -e
+   ```
+
+2. Add the following line to schedule the renewal process daily:
+   ```sh
+   0 3 * * * cd /path/to/nginx-docker && docker-compose run certbot renew >> /path/to/renewal.log 2>&1 && docker-compose restart nginx
+   ```
+
+   - Replace `/path/to/nginx-docker` with the directory where your `docker-compose.yml` file is located.
+   - Logs from the renewal process will be saved to `/path/to/renewal.log`.
+
+3. Save and exit the crontab file.
+
+The cron job will run daily at 3:00 AM, checking if renewal is required and restarting the Nginx service to apply updated certificates.
 
 ## Tips
 
